@@ -21,7 +21,7 @@ HttpRequest::HttpRequest(const HttpServerConfig& cfg)
     tempFile = NULL;
 
     QString hostAddress = cfg.host == QHostAddress::Any ? "localhost" : cfg.host.toString();
-    host = "http://" + host + ":" + QString::number(cfg.port) + "/";
+    host = QString{ "http://" } + hostAddress + ":" + QString::number(cfg.port) + "/";
 }
 
 void
@@ -33,13 +33,6 @@ HttpRequest::readRequest(QTcpSocket* socket)
     int toRead = maxSize - currentSize + 1; // allow one byte more to be able to detect overflow
     lineBuffer.append(socket->readLine(toRead));
     currentSize += lineBuffer.size();
-
-    QString hostAddress =
-      socket->localAddress() == QHostAddress::Any ? "localhost" : socket->localAddress().toString();
-    QString hostPort = socket->localPort() == 0
-                         ? QString{ "" }
-                         : QString{ ":" } + QString::number(socket->localPort());
-    host = QString{ "http://" } + hostAddress + hostPort + QString{ "/" };
 
     if (!lineBuffer.contains('\r') && !lineBuffer.contains('\n')) {
 #ifdef SUPERVERBOSE
