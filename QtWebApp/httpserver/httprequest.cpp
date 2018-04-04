@@ -19,6 +19,9 @@ HttpRequest::HttpRequest(const HttpServerConfig& cfg)
     maxSize = cfg.maxRequestSize;
     maxMultiPartSize = cfg.maxMultipartSize;
     tempFile = NULL;
+
+    QString hostAddress = cfg.host == QHostAddress::Any ? "localhost" : cfg.host.toString();
+    host = "http://" + host + ":" + QString::number(cfg.port) + "/";
 }
 
 void
@@ -36,7 +39,7 @@ HttpRequest::readRequest(QTcpSocket* socket)
     QString hostPort = socket->localPort() == 0
                          ? QString{ "" }
                          : QString{ ":" } + QString::number(socket->localPort());
-    host = QString{ "http://%1%2/" }.arg(hostAddress).arg(hostPort);
+    host = QString{ "http://" } + hostAddress + hostPort + QString{ "/" };
 
     if (!lineBuffer.contains('\r') && !lineBuffer.contains('\n')) {
 #ifdef SUPERVERBOSE
