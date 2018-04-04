@@ -1,12 +1,12 @@
-/**
+﻿/**
   @file
   @author Stefan Frings
 */
 
 #pragma once
 
-#include "qtwebappglobal.h"
 #include "httpserverconfig.h"
+#include "qtwebappglobal.h"
 
 #include <QByteArray>
 #include <QHostAddress>
@@ -35,20 +35,27 @@ namespace qtwebapp {
   The body is always a little larger than the file itself.
 */
 
-class QTWEBAPP_EXPORT HttpRequest {
+class QTWEBAPP_EXPORT HttpRequest
+{
     Q_DISABLE_COPY(HttpRequest)
     friend class HttpSessionStore;
 
-public:
-
+  public:
     /** Values for getStatus() */
-    enum RequestStatus {waitForRequest, waitForHeader, waitForBody, complete, abort};
+    enum RequestStatus
+    {
+        waitForRequest,
+        waitForHeader,
+        waitForBody,
+        complete,
+        abort
+    };
 
     /**
       Constructor.
       @param settings Configuration settings
     */
-    HttpRequest(const HttpServerConfig &cfg);
+    HttpRequest(const HttpServerConfig& cfg);
 
     /**
       Destructor.
@@ -78,6 +85,9 @@ public:
     /** Get the raw path of the HTTP request (e.g. "/file%20with%20spaces.html") */
     const QByteArray& getRawPath() const;
 
+    /** Get the host this HTTP request was sent to (e.g. "http://localhost:8080/") */
+    const QString& getHost() const;
+
     /** Get the version of the HTPP request (e.g. "HTTP/1.1") */
     QByteArray getVersion() const;
 
@@ -99,7 +109,7 @@ public:
      * Get all HTTP request headers. Note that the header names
      * are returned in lower-case.
      */
-    QMultiMap<QByteArray,QByteArray> getHeaderMap() const;
+    QMultiMap<QByteArray, QByteArray> getHeaderMap() const;
 
     /**
       Get the value of a HTTP request parameter.
@@ -116,7 +126,7 @@ public:
     QList<QByteArray> getParameters(const QByteArray& name) const;
 
     /** Get all HTTP request parameters. */
-    QMultiMap<QByteArray,QByteArray> getParameterMap() const;
+    QMultiMap<QByteArray, QByteArray> getParameterMap() const;
 
     /** Get the HTTP request body.  */
     QByteArray getBody() const;
@@ -146,7 +156,7 @@ public:
     QByteArray getCookie(const QByteArray& name) const;
 
     /** Get all cookies. */
-    QMap<QByteArray,QByteArray>& getCookieMap();
+    QMap<QByteArray, QByteArray>& getCookieMap();
 
     /**
       Get the address of the connected client.
@@ -155,19 +165,18 @@ public:
      */
     QHostAddress getPeerAddress() const;
 
-private:
-
+  private:
     /** Request headers */
-    QMultiMap<QByteArray,QByteArray> headers;
+    QMultiMap<QByteArray, QByteArray> headers;
 
     /** Parameters of the request */
-    QMultiMap<QByteArray,QByteArray> parameters;
+    QMultiMap<QByteArray, QByteArray> parameters;
 
     /** Uploaded files of the request, key is the field name. */
-    QMap<QByteArray,QTemporaryFile*> uploadedFiles;
+    QMap<QByteArray, QTemporaryFile*> uploadedFiles;
 
     /** Received cookies */
-    QMap<QByteArray,QByteArray> cookies;
+    QMap<QByteArray, QByteArray> cookies;
 
     /** Storage for raw body data */
     QByteArray bodyData;
@@ -177,6 +186,9 @@ private:
 
     /** Request path (in raw encoded format) */
     QByteArray path;
+
+    /** Host path */
+    QString host;
 
     /** Request protocol version */
     QByteArray version;
@@ -231,7 +243,6 @@ private:
 
     /** Buffer for collecting characters of request and header lines */
     QByteArray lineBuffer;
-
 };
 
 } // end of namespace
